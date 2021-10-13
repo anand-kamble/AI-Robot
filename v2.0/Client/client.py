@@ -9,6 +9,86 @@ from ctypes import c_wchar_p
 from requests import get
 import socketio
 import base64
+import time
+
+# Function handing Image Processing
+def imagePro():
+
+    # Loading model from respective files.
+    model = cv2.dnn_DetectionModel("frozen_inference_graph.pb","ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt")
+    
+    # Defining classes in which items are classified.
+    Classes = ["Living Thing","Vehicle","Edible","Electronic"]
+
+    # Loading Labels for Image Detection from .txt file.
+    classLabels = []
+    fileName = 'label.txt'
+    with open(fileName,'rt') as fpt:
+        classLabels = fpt.read().rstrip('\n').split('\n')
+    #print(classLabels)
+
+    # Setting up input ParametersN
+    model.setInputSize(320,320)
+    model.setInputScale(1.0/127.5)
+    model.setInputMean((127.5,127.5,127.5))
+    model.setInputSwapRB(True)
+
+    # Start Video capture from the camera
+    cap = cv2.VideoCapture(0)
+
+    # Check whether the Capture has initialized or not.
+    if not cap.isOpened():
+        cap = cv2.videoCapture(1) 
+    if not cap.isOpened():
+        raise IOError("Cannot Open Video") 
+    
+    # Setting up font properties which will be displayed on processed frame
+    font_scale = 3
+    font = cv2.FONT_HERSHEY_PLAIN
+
+    print("Image Recognition initiated.")
+    while True:
+        # Reading the frames from camera
+        ret,frame = cap.read()
+
+        # Confirming that the frame has been read successfully.
+        if not ret:
+            print("[ERROR] Can't receive frame.")
+            break
+
+        # Detecting objects in the frame
+        ClassIndex, confidence, bbox = model.detect(frame,confThreshold=0.55)
+        
+        # We will only write text on frame there are objects found in the frame
+        if (len(ClassIndex)!=0):
+
+            # Writing text for each object found in frame
+            for ClassInd, conf, boxes in zip(ClassIndex.flatten(), confidence.flatten(), bbox):
+
+                # Just so we don't exceed the number of available labels.
+                if(ClassInd <= 80):
+                    foundItem = classLabels[ClassInd-1].split(',')
+                    cv2.rectangle(frame,boxes,(255,0,0),)
+                    cv2.putText(frame,classLabels[ClassInd-1],(boxes[0],boxes[1]+40), font, fontScale=font_scale, color=(0,255,0), thickness=3)
+
+        cv2.imshow('temp',frame)
+        cv2.waitKey(2)
+        # Writing the processed frame to JPG file.
+        #cv2.imwrite('camera.jpg',frame)
+        retval , buffer = cv2.imencode('.jpg',frame)
+        encodedImage = base64.b64encode(buffer)
+
+        time.sleep(1);
+        try:
+            sio.emit('liveimage',encodedImage)
+            print('EMITING')
+        except:
+            pass
+    # Closing all the processes after the we have finished with processing.        
+    cap.release() 
+    cv2.destroyAllWindows()
+
+
 import RPi.GPIO as GPIO
 
 sio = socketio.Client()
@@ -48,19 +128,25 @@ speedControl2 = GPIO.PWM(pwm2,1000)
 # Starting the PWN with Duty Cycle 25%
 speedControl1.start(25)
 speedControl2.start(25)   
-
-
+ 
 isSocketConnected = False
 
-username = 'Robot 1'
-password = '1234'
+username = input("Create a Display name for this Machine : ")
+if len(username) == 0:
+    username = input("Display name is mandatory : ")
+password = input("Create a password for this Machine : ")
+if len(password) == 0:
+    password = 'none'
+if password == 'none':
+    password = input("Please input a stronger password : ")
+
 
 authOBJ = username + ','+ password
 @sio.event
 def connect():
     print("I'm connected!")
     sio.emit('CreateAuth',authOBJ )
-    sio.emit('getOnlineMachines')
+    #sio.emit('getOnlineMachines')
     imagePro()
 
 @sio.event
@@ -88,7 +174,7 @@ def keypress(data):
 
 @sio.on('keyend')
 def keyend():
-    print('KEY UP')
+    print('[Movement] : End')
     GPIO.output(in1,GPIO.LOW)
     GPIO.output(in2,GPIO.LOW)
     GPIO.output(in3,GPIO.LOW)
@@ -104,109 +190,33 @@ def globalvariables(buffer , want):
 # Fuctions which initiates movement of the Robot in given Direction
 def robotMovement(direction):
     if direction == "w":               
-        print("Forward")
+        print("[Movement] : Forward")
         GPIO.output(in1,GPIO.HIGH)
         GPIO.output(in2,GPIO.LOW)
         GPIO.output(in3,GPIO.HIGH)
         GPIO.output(in4,GPIO.LOW)
     elif direction == "a":
-        print("Left")
+        print("[Movement] : Left")
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
         GPIO.output(in3,GPIO.HIGH)
         GPIO.output(in4,GPIO.LOW)
     elif direction == "s":
-        print("Backward")
+        print("[Movement] : Backward")
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
         GPIO.output(in3,GPIO.LOW)
         GPIO.output(in4,GPIO.HIGH)
         print("Backward")
     elif direction == "d":
-        print("Right")
+        print("[Movement] : Right")
         GPIO.output(in1,GPIO.HIGH)
         GPIO.output(in2,GPIO.LOW)
         GPIO.output(in3,GPIO.LOW)
         GPIO.output(in4,GPIO.HIGH)
 
-# Function handing Image Processing
-def imagePro():
-
-    # Loading model from respective files.
-    model = cv2.dnn_DetectionModel("frozen_inference_graph.pb","ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt")
-    
-    # Defining classes in which items are classified.
-    Classes = ["Living Thing","Vehicle","Edible","Electronic"]
-
-    # Loading Labels for Image Detection from .txt file.
-    classLabels = []
-    fileName = 'label.txt'
-    with open(fileName,'rt') as fpt:
-        classLabels = fpt.read().rstrip('\n').split('\n')
-    #print(classLabels)
-
-    # Setting up input ParametersN
-    model.setInputSize(320,320)
-    model.setInputScale(1.0/127.5)
-    model.setInputMean((127.5,127.5,127.5))
-    model.setInputSwapRB(True)
-
-    # Start Video capture from the camera
-    cap = cv2.VideoCapture(0)
-
-    # Check whether the Capture has initialized or not.
-    if not cap.isOpened():
-        cap = cv2.videoCapture(1) 
-    if not cap.isOpened():
-        raise IOError("Cannot Open Video") 
-    
-    # Setting up font properties which will be displayed on processed frame
-    font_scale = 3
-    font = cv2.FONT_HERSHEY_PLAIN
-
-    print("ON")
-    while True:
-        # Reading the frames from camera
-        ret,frame = cap.read()
-
-        # Confirming that the frame has been read successfully.
-        if not ret:
-            print("[ERROR] Can't receive frame.")
-            break
-
-        # Detecting objects in the frame
-        ClassIndex, confidence, bbox = model.detect(frame,confThreshold=0.55)
-        
-        # We will only write text on frame there are objects found in the frame
-        if (len(ClassIndex)!=0):
-
-            # Writing text for each object found in frame
-            for ClassInd, conf, boxes in zip(ClassIndex.flatten(), confidence.flatten(), bbox):
-
-                # Just so we don't exceed the number of available labels.
-                if(ClassInd <= 80):
-                    foundItem = classLabels[ClassInd-1].split(',')
-                    cv2.rectangle(frame,boxes,(255,0,0),)
-                    cv2.putText(frame,classLabels[ClassInd-1],(boxes[0],boxes[1]+40), font, fontScale=font_scale, color=(0,255,0), thickness=3)
-
-        cv2.imshow('temp',frame)
-        cv2.waitKey(2)
-        # Writing the processed frame to JPG file.
-        #cv2.imwrite('camera.jpg',frame)
-        retval , buffer = cv2.imencode('.jpg',frame)
-        encodedImage = base64.b64encode(buffer)
-
-        
-        try:
-            sio.emit('liveimage',encodedImage)
-            print('EMITING')
-        except:
-            pass
-    # Closing all the processes after the we have finished with processing.        
-    cap.release() 
-    cv2.destroyAllWindows()
 
 
 
-sio.connect('http://localhost:5000')
+sio.connect('https://airobotserver.herokuapp.com')
 sio.wait()

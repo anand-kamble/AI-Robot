@@ -2,16 +2,20 @@ from logging import debug
 import socketio
 import eventlet
 import json
+import flask
+from flask import send_file
+
+port = 9090
+print('[PORT SELECTED] %d' %port)
 sio = socketio.Server(cors_allowed_origins="*")
 staticFiles = { '/': {'content_type': 'text/html', 'filename': 'static/index.html'}}
 app = socketio.WSGIApp(sio , static_files=staticFiles)
 
 onlineRobos = []
 
-
 @sio.event
 def connect(sID, environ):
-  print(sID, 'connected')
+      print(sID, 'connected')
   
 
 @sio.event
@@ -85,4 +89,5 @@ def liveimg(sID,data):
 
 
 if __name__ == '__main__':
-  eventlet.wsgi.server(eventlet.listen(('',5000)),app)
+      eventlet.wsgi.server(eventlet.listen(('',port)),app)
+      print('[LISTENING ON PORT] Number = %d' %port)  

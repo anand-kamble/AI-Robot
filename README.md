@@ -11,7 +11,7 @@ python3 client.py
 RaspberryPi will connect to the server and the server will broadcast to every user connected that the robot has connected along with it's name on a web page can be accessed by going to the server Url.   
   
 ### Connecting to the Robot 
-Go to the server Url using a browser like Chrome, Safari, Edge. If Any robots are online you will be able to see it's Display name on screen.
+Go to the [server Url](https://airobotserver.herokuapp.com/) using a browser like Chrome, Safari, Edge. If Any robots are online you will be able to see it's Display name on screen.
 In order to connect to the robot user must enter the password for that robot. Then click on Connect Button next to it.  
   
 ![](https://raw.githubusercontent.com/anand-kamble/AI-Robot/master/v2.0/docs/Screenshot%20(146).png)

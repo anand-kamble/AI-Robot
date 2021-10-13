@@ -1,3 +1,7 @@
+# This file is made for Raspberry Pi.
+# If you wish to run this on other machines
+# Comment or Delete the GPIO part.
+
 # Importing required packages
 import multiprocessing
 import cv2

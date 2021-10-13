@@ -187,7 +187,7 @@
      var skt = io()
      $(document).ready(()=>{
         
-         skt = io.connect('http://localhost:5000')
+         skt = io.connect('https://airobotserver.herokuapp.com/')
 
          skt.on('connect',()=>{
              
@@ -346,14 +346,6 @@
             }
         })
      }
-/*      setInterval(()=>{
-         d = new Date();
-            //$("#liveimg").attr("src", "/livefeed?"+d.getTime());
-     },1000) */
-     //w = 87, a = 65 , s = 83 , d = 68
-     // up = 38,left = 37, down = 40, right = 39
-
-     //$("#speed").change(()=>{postSpeedToServer(document.getElementById("speed").value)})
     }
  </script>
  </html>

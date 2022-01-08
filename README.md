@@ -3,6 +3,10 @@
   <h3>This project is in devolopment.</h3>
 </div>
 
+
+## v3.0
+The robot can now follow a bottle in its sight by tracking the position of the bottle in image and deciding the direction to move in. This version has also added safety features to prevent collision using Ultrasonic sensor. 
+
 ## v2.0  
 This version of the project can be deployed on Internet. It includes Server files in the folder named [Server](/v2.0/server/) which are deployed on Heroku and Client files in the [Client folder](/v2.0/Client/). The Clients file are to be run on RaspberryPi, before running make sure RaspberryPi has an active internet connection. Run the following command to start the program on RaspberryPi.
 ```

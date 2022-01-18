@@ -38,4 +38,4 @@ This is the first version of code devoloped for robot. Used mostly for testing p
 ### Requirements for v1.0  
 python - 3.9.7^  
 opencv-python - 4.5.3.56^  
-Flask - 2.0.1^  
+

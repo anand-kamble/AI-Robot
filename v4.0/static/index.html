@@ -1,0 +1,800 @@
+ <!DOCTYPE html>
+ <html>
+ <head>
+     <meta charset='utf-8'>
+     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+     <title>AI ROBOTS</title>
+     <meta name='viewport' content='width=device-width, initial-scale=1'>
+     <script src="socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+     <script src="jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+ </head>
+ <style>
+     html , body{
+        font-family: 'Poppins', sans-serif;
+         margin: 0%;
+         background-color: rgb(10, 10, 10);
+         color: whitesmoke;
+     }
+     .stylediv {
+         width: 50px;
+         height: 50px;
+         background-color: gray;    
+         display: flex;
+         align-items: center;
+         justify-content: center;
+     }
+     .slider{
+         margin: 10vh 0 0 0;
+     }
+     .keyHolder{
+         position: absolute;
+            margin-left: 0vw;
+         display: grid;
+         grid-template-columns: auto auto auto;
+         bottom: 10vh;
+         margin-left: 10vw;
+         transform: translateX(-50%);
+     }
+     #loginpage {
+         position: absolute;
+         z-index: 990;
+         width: 100vw;
+         height: 100vh;
+         background-color: rgb(10, 10, 10);
+     }
+     #introdiv{
+         color: whitesmoke;
+         width: 50vw;
+         background-color: rgb(31, 31, 31);
+         margin: 12.5vh 25vw;
+         text-align: center;
+         height: 70vh;
+         padding: 0 0 2.5vh 0;
+     }
+     .robotname{
+         background-color:rgb(49, 49, 49);;
+         margin: 2vh 5vw;
+         height: 100px;
+         border-radius: 10px;
+         padding: 5px;
+/*          display: flex;
+         align-items: center;
+         justify-content: center; */
+
+     }
+     textarea:focus, input:focus{
+    outline: none;
+        }
+     .authtxt{
+         border: none;
+         padding: 5px;
+         font-family: 'Poppins', sans-serif;
+         background-color: rgb(49, 49, 49);
+         color: whitesmoke;
+         border-bottom: 2px solid whitesmoke;
+         width: 20vw;
+     }
+     ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: whitesmoke;
+        opacity: 0.8; /* Firefox */
+        }
+        .authbtn{
+            padding: 10px;
+            margin-left: 10px;
+            font-family: 'Poppins', sans-serif;
+            color: black;
+            background-color: whitesmoke;
+            border: none;
+            border-radius: 5px;
+        }
+        #IntrotitleHolder{
+            position: fixed;
+            /* margin-left: 25vw;
+            transform: translateX(-50%); */
+            background-color:  rgb(31, 31, 31);
+            z-index: 991;
+            width: 50vw;
+        }
+        #online-robots{
+            display: flex;flex-direction: column;overflow: hidden;margin-top: 100px;
+        }
+        #alerts{
+            color: whitesmoke;
+            margin-left: 50vw;
+            transform: translateX(-50%);
+            position: absolute;
+            bottom: 7.5vh;
+            display: none;
+        }
+        #liveimg{
+            max-height: 70vh;
+            max-width: 50vw;
+            margin-left: 50vw;
+            transform: translateX(-50%);
+        }
+        #currentInfo{
+            background-color: rgb(10, 10, 10);
+            width: 20vw;
+            height: 90vh;
+            position: absolute;
+            padding: 50px 0 0 20px;
+
+        }
+        #controls{
+            border-left: white 1px solid;
+            background-color: rgb(10, 10, 10);
+            position: absolute;
+            top: 0%;
+            right: 0%;
+            width: 20vw;
+            height: 100vh;
+            padding-left: 20px;
+        }
+
+        .MobilekeyHolder{
+                visibility: hidden;
+        }
+        
+        #scanform{
+            margin-top: 5vh;
+            display: grid;
+            grid-template-columns: 10vw 10vw;
+        }
+
+        #scanform input {
+            width: 5vw;
+            text-align: center;
+            margin-bottom: 2vh;
+            color: white;
+            background-color: rgb(61, 61, 61);
+            outline: none;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        #scanbtn{
+            width: calc(15vw + 10px);
+            padding: 5px 10px;
+            color: white;
+            background-color: rgb(61, 61, 61);
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            /* margin-left: 10vw;
+            transform: translate(-50%,-50%); */
+        }
+
+        #robotLiveImage{
+            transform: translateX(-20px);
+        }
+
+        #robotTopView{
+            width: 10vw;
+            margin-left: 10vw ;
+            transform: translateX(-50%);
+        }
+        #servodiagramHolder{
+            width: 20vw;
+            height: 20vh;
+        }
+        #linerotate{
+            transform: translateY(10vh) rotateZ(90deg);
+        }
+        .line{
+            height: 10vh;
+            width: 2px;
+            background-color: cyan;
+            bottom: 0%;
+            position: relative;
+            margin-left: 10vw;
+            
+        }
+        @media only screen and (max-width:800px) {
+            #controls{
+                display: none;
+            }
+
+            .MobilekeyHolder{
+                visibility: visible;
+                display: block;
+                z-index: 980;
+                margin-top: 90vh;
+                position: absolute;
+                margin-left: 0vw;
+                display: grid;
+                grid-template-columns: auto auto auto;
+                bottom: 10vh;
+                margin-left: 50vw;
+                transform: translateX(-50%);
+            }
+            #currentInfo{
+                width: 100vw;
+                height: 30vh;
+                padding: 3vh;
+            }
+            #loginpage{
+                width:100vw;
+            }
+            #online-robots{
+                width: 100vw;
+            }
+            #liveimg{
+                max-height: 70vh;
+                max-width: 100vw;
+                margin-top: 30vh;
+                margin-left: 50vw;
+                transform: translateX(-50%);
+            }
+            #introdiv{
+                margin: 12.5vh 0vw;
+                width: 100vw;
+            }
+            #IntrotitleHolder{
+                margin-left: 50vw;
+                transform: translateX(-50%);
+            }
+            .robotname{
+                width: 100vw;
+            }
+        }
+ </style>
+ <body> 
+     <div id="loginpage">
+         <p id="alerts">ALERTS</p>
+        <div id="introdiv" style="overflow-y: auto;">
+            <div id="IntrotitleHolder">
+                <h2 id="introhead" >AI Robot</h2>
+                <p>Online Robots</p>
+            </div>
+            <div id="online-robots">
+<!--                 <div id="robotname" class="robotname">
+                    <p>Robot 1</p>
+                    <input type="text" name="auth0" id="auth0" class="authtxt" placeholder="Password">
+                    <button type="button" class="authbtn" onclick="">Connect</button>
+                </div> -->
+            </div>
+        </div>
+     </div>
+     <div id="currentInfo">
+        <h1 style="margin-top: 0%;">Robot UI</h1>    
+        <p id="connectedto">Connected to : </p>
+        <p id="ping">Ping : </p>
+        <div id="scanform">                
+            <label>Diameter</label>
+            <input type="text" value="70" name="Diameter">
+            <label>R.P.M.</label>
+            <input type="text" name="rpm" value="100">
+            <label>TrackWidth</label>
+            <input type="text" name="trackwidth" value="238">
+            <label>COF</label>
+            <input type="text" name="cof" value="0.8">
+        </div>
+        <button onclick="startscan()" id="scanbtn">SCAN</button>
+        <button onclick="startfollow()" id="scanbtn" style="margin-top: 5px ;">FOLLOW</button>
+        <button onclick="cancelscan()" id="scanbtn" style="margin-top: 5px ;">CANCEL</button>
+        <button onclick="cancelCulture()" id="scanbtn" style="margin-top: 5px ;">RESET</button>
+        
+
+        <div id="robotLiveImage">
+            <div id="servodiagramHolder">
+                <p>Servo Angle <span id="servoangledisplay">90</span> &deg;</p>
+                <div id="linerotate">
+                    <div class="line" id="line1"></div>
+                    <div class="line" id="line2" style="background-color: rgba(0, 0, 139, 0);"></div>
+                </div>
+            </div>
+            <img id="robotTopView" src="Robot top view for web.png">
+        </div>
+<!--         <form class="slider">
+            <input type="range" min="1" max="100" value="25" name="speed" id="speed">
+        </form>
+        <p id="speedprint">Current Speed : 25%</p>
+        <p style="display: none;" id="log">Speed Changed success.</p> -->
+     </div>
+     
+     <img id="liveimg" src="https://i.redd.it/adw11ac0plq71.jpg" alt="live footage">
+     <p style="margin-left: 25vw;">FPS : <span id="fps"></span></p>
+
+     <div id="controls">
+         <h1 style="margin-left: 50%;transform: translateX(-50%);">Controls</h1>
+         <p>• To Move forward - <br>press "W" key or Up Arrow Key "↑"</p>
+         <p>• To Move Backward - <br>press "S" key or Up Arrow Key "↓"</p>
+         <p>• To Move Left - <br>press "A" key or Up Arrow Key "←"</p>
+         <p>• To Move Right - <br>press "D" key or Up Arrow Key "→"</p>
+         <div class="keyHolder">
+            <div class="stylediv" style="background-color: rgb(10, 10, 10);"></div> 
+           <div class="stylediv" id="wkey">↑</div>
+           <div class="stylediv" style="background-color: rgb(10, 10, 10);"></div>
+           <div class="stylediv" id="akey">←</div>
+           <div class="stylediv" id="skey">↓</div>
+           <div class="stylediv" id="dkey">→</div>
+       </div>
+     </div>  
+     <div class="MobilekeyHolder keyHolder">
+        <div class="stylediv" style="background-color: rgb(10, 10, 10);"></div> 
+       <div class="stylediv" id="mwkey">↑</div>
+       <div class="stylediv" style="background-color: rgb(10, 10, 10);"></div>
+       <div class="stylediv" id="makey">←</div>
+       <div class="stylediv" id="mskey">↓</div>
+       <div class="stylediv" id="mdkey">→</div>
+   </div>  
+
+
+ </body>
+ <script>
+     var enc = new TextDecoder("utf-8");
+     var skt = io()
+     var room
+     var isScanInProgress = false
+     $(document).ready(()=>{
+        
+         skt = io.connect('http://localhost:5000')
+
+         skt.on('connect',()=>{
+             
+         })
+         skt.emit('getOnlineMachines')
+     })
+
+     skt.on('sres',(data)=>{
+         console.log(`Got ${JSON.stringify(data)}`)
+         refreshOnlineRobots(data)  
+         
+     })
+
+     var has_found_object = false
+     
+     function startscan(){
+         skt.emit('startscan');
+         scan1.StartScan()
+     }
+     function cancelscan(){
+         scan1.AbortScan()
+     }
+
+     function startfollow(){
+        //if(has_found_object){
+            skt.emit('startfollow')
+        //}else{
+          //  window.alert(`No object was found in the scan.`)
+        //}
+     }
+
+     function cancelCulture(){
+         skt.emit('cancelscan');
+     }
+
+     function ServoInfoUpdate(angle){
+         try {
+            var tempangle = angle-90
+            document.getElementById('servoangledisplay').innerText = angle
+            document.getElementById('linerotate').style = 'transform: translateY(10vh) translateX(10px) rotateZ('+tempangle+'deg);';
+         } catch (error) {
+            console.log("[ERROR] Can't find the element named 'linerotate' in HTML page.")
+         }
+        
+     }
+
+     function refreshOnlineRobots(data){
+        var machines = data.split(',')
+        for(i=1;i<machines.length;i++){
+            var html = `<div id="robotname"  class="robotname">
+                        <p>${machines[i]}</p>
+                        <input type="text" name="auth0" id="auth${i}" class="authtxt" placeholder="Password">
+                        <button type="button" class="authbtn" onclick="authto('${machines[i]}',${i})">Connect</button>
+                    </div>`
+            document.getElementById("online-robots").insertAdjacentHTML('beforeend',html)
+        } 
+     }
+     //refreshOnlineRobots(',hi,asf,gdaga,ggad') //1800 202 9898
+
+     function authto(nameofRobot,number){
+         console.log(nameofRobot)
+         var pass = $("#auth"+number).val();
+         var tosend = nameofRobot +','+ pass
+         skt.emit("reqtoJoin",tosend)
+     }
+
+     skt.on('joinsuccess',(data)=>{
+         console.log("VALID RES "+data)
+         if(data.includes('joined')){
+             console.log('Joined')
+             var roomname = data.split(',')[1]
+             mainfunc(roomname)
+             room = roomname
+         }
+         if(data=='falsePassword'){
+             console.log('Pass wrong')
+             document.getElementById('alerts').innerText = 'Please check the Password'
+             $("#alerts").fadeOut(400,()=>{
+                $("#alerts").fadeIn(2000,()=>{})
+             })
+             
+         }
+         if(data=='falseName'){
+             console.log('name wrong')
+         }
+     })
+
+     skt.on('foundObject',()=>{
+        has_found_object = true
+        document.getElementById('line1').style = 'background-color: red;'
+        console.log("Found Object")
+     })
+
+     function ping(){
+        var startTime = + new Date()
+     skt.emit("ping",startTime)
+     skt.on('pingres',(data)=>{
+         var time = + new Date()
+         //console.log(time,startTime)
+         var ping = time - startTime
+         if(ping > 1000){
+             ping = ping/1000
+            document.getElementById("ping").innerText = `Ping : ${ping} ms`
+         }else{
+            document.getElementById("ping").innerText = `Ping : ${ping} ms`
+         }
+         
+     })
+     }
+
+     mainfunc()
+     
+    
+    function Scan(TimeforRot,TimeForStraight){
+        if(isScanInProgress !== false){
+            setTimeout(()=>{
+                skt.emit('keypress','w',room)
+                console.log('Going Straight')
+                setTimeout(()=>{
+                    skt.emit('keyup',room)    
+                },parseInt(TimeForStraight)*1000)
+            },parseInt(TimeforRot)*1000)
+        }
+    }
+    
+    
+    function mainfunc(room){
+    $("#loginpage").fadeOut()
+
+    skt.on('scanstarted',(TimeRot,TimeStr)=>{
+        isScanInProgress = true
+        console.log('scan started for',TimeRot,TimeStr)
+        Scan(TimeRot,TimeStr)
+
+    })
+
+    skt.on('abortscan',()=>{
+        var lastpostion = scan1.AbortScan()
+
+    })
+
+    setInterval(()=>{
+         ping()
+     },1000)
+     var lastFrameTime = 0
+     skt.on('takeliveimg',(data)=>{
+         //console.log(data)
+         var img = enc.decode(data);
+         document.getElementById("liveimg").src = 'data:image/jpeg;base64, '+img;
+        document.getElementById('fps').innerText = 1/(+new Date - lastFrameTime)*1000 
+        // console.log(`FPS = ${1/(+new Date - lastFrameTime)*1000}`)
+         lastFrameTime = +new Date
+
+     })
+
+        document.getElementById("connectedto").innerText += room
+     let keys = {
+         w: false,
+         a: false,
+         s: false,
+         d: false
+     }
+     var wwidth = 50 , awidth = 50 , swidth =50 , dwidth = 50, time = 0;
+     // Loops every 33 millisecond
+     document.onkeydown = function (e) {   
+
+        //skt.emit('message',"KEY IS DOWN",room)
+         //console.log(e.keyCode /* || e.which */);
+         if(e.keyCode == 87 || e.keyCode == 38 && keys.w == false){
+             //postKeyToServer("w")
+             document.getElementById('wkey').style = 'background-color:white;color:black;'
+             keys.w = true
+             skt.emit('keypress','w',room)
+         }
+         if(e.keyCode == 65|| e.keyCode == 37 && keys.a == false){
+            // postKeyToServer("a")
+             document.getElementById('akey').style = 'background-color:white;color:black;'
+             keys.a = true
+            skt.emit('keypress','a',room)
+         }
+         if(e.keyCode == 83 || e.keyCode == 40 && keys.s == false){
+             //postKeyToServer("s")   
+             document.getElementById('skey').style = 'background-color:white;color:black;'
+             keys.s = true
+             skt.emit('keypress','s',room)
+         }
+         if(e.keyCode == 68 || e.keyCode == 39 && keys.d == false){
+             //postKeyToServer("d")
+             document.getElementById('dkey').style = 'background-color:white;color:black;'
+             keys.d = true
+             skt.emit('keypress','d',room)
+         }
+     }
+
+     var mwkey = document.getElementById('mwkey')
+     var makey = document.getElementById('makey')
+     var mskey = document.getElementById('mskey')
+     var mdkey = document.getElementById('mdkey')
+     mwkey.addEventListener('touchstart',()=>{
+         console.log("WM")
+         mwkey.style = 'background-color:white;color:black;'
+             keys.w = true
+             skt.emit('keypress','w',room)
+     })
+     makey.addEventListener('touchstart',()=>{
+        console.log("AM")
+        makey.style = 'background-color:white;color:black;'
+             keys.a = true
+            skt.emit('keypress','a',room)
+     })
+     mskey.addEventListener('touchstart',()=>{
+        console.log("SM")
+        mskey.style = 'background-color:white;color:black;'
+             keys.s = true
+             skt.emit('keypress','s',room)
+     })
+     mdkey.addEventListener('touchstart',()=>{
+        console.log("DM")
+        mdkey.style = 'background-color:white;color:black;'
+             keys.d = true
+             skt.emit('keypress','d',room)
+     })
+
+     mwkey.addEventListener('touchend',()=>{
+        touchcancel()
+     })
+     makey.addEventListener('touchend',()=>{
+        touchcancel()
+     })
+     mskey.addEventListener('touchend',()=>{
+        touchcancel()
+     })
+     mdkey.addEventListener('touchend',()=>{
+        touchcancel()
+     })
+
+     
+
+     function touchcancel(){
+         console.log('Touch Up')
+         skt.emit('keyup',room)
+/*          $.post("/keyup",(res)=>{
+                 console.log(res);
+             }) */
+        if(!keys.w==false){mwkey.style = 'background-color:gray;color:white;';keys.w = false}
+        if(!keys.a==false){makey.style = 'background-color:gray;color:white;';keys.a = false}
+        if(!keys.s==false){mskey.style = 'background-color:gray;color:white;';keys.s = false}
+        if(!keys.d==false){mdkey.style = 'background-color:gray;color:white;';keys.d = false}   
+     }
+     document.onkeyup=(e)=>{
+         console.log(e.keyCode)
+         skt.emit('keyup',room)
+/*          $.post("/keyup",(res)=>{
+                 console.log(res);
+             }) */
+        if(!keys.w==false){document.getElementById('wkey').style = 'background-color:gray;color:white;';keys.w = false}
+        if(!keys.a==false){document.getElementById('akey').style = 'background-color:gray;color:white;';keys.a = false}
+        if(!keys.s==false){document.getElementById('skey').style = 'background-color:gray;color:white;';keys.s = false}
+        if(!keys.d==false){document.getElementById('dkey').style = 'background-color:gray;color:white;';keys.d = false}      
+     }
+
+     function postKeyToServer(keyCode){
+        $.post("/key/"+keyCode,(res)=>{
+                 console.log(res);
+             })
+     }
+     var previousSpeed = 25;
+     function postSpeedToServer(speed){
+        //$("#log").fadeIn(1000,()=>{$("#log").fadeOut(1000)})
+        $.post("/changespeed/"+speed , (res)=>{
+            if(res == "Done"){
+                previousSpeed = speed
+                document.getElementById("speedprint").innerText = `Current Speed : ${document.getElementById("speed").value} %`
+                document.getElementById("log").innerText = 'Successfully changed the speed.'
+                $("#log").fadeIn(1000,()=>{$("#log").fadeOut(1000)})
+            }
+            if(res == "Failed"){
+                document.getElementById("log").value = previousSpeed
+                //document.getElementById("speedprint").innerText = `Current Speed : ${document.getElementById("speed").value}%  `
+                document.getElementById("log").innerText = 'Failed to change Speed.'
+                $("#log").fadeIn(1000,()=>{$("#log").fadeOut(1000)})
+            }
+        })
+     }
+
+
+     class Robot {
+    /**
+    *@param {float} diameter Diameter of the Wheel in mm(millimeter).
+    *@param {float} rpm RPM of the motors.
+    *@param {float} trackWidth Trackwidht of robot in mm(millimeter).
+    *@param {float} cof Coefficient of friction between wheels and surface.
+    *@returns
+    */
+    constructor(diameter , rpm , trackWidth , cof){
+        this.diameter = diameter/1000;
+        this.rpm = rpm;
+        this.trackWidth = trackWidth/1000;
+        this.cof = cof;
+        this.perimeter = 3.142*(this.diameter);
+        this.speed = (this.perimeter*rpm)/60;
+    }
+
+    /**
+     * 
+     * @param {float} Dist Distance to be travelled straight in Meters  
+     * @returns 
+     */
+    DistanceToTime(Dist){
+        return Dist / this.speed;        
+    }
+
+    /**
+     * 
+     * @param {int} rot Clockwise Rotation in Degrees.
+     * @returns 
+     */
+    RotationToTime(rot){
+        return ((((this.trackWidth/2)*((3.142*parseFloat(rot))/180)) / this.speed)) / (1 - this.cof)
+    }
+}
+
+
+bot =  new Robot(70,100,238,0.8)
+
+class ScanVicinity {
+    /**
+     * 
+     * @param {int} numberOfStops Number for stops in scanning.
+     * @param {float} StepLength Distance between each stop in meter.
+     * @param {int} NumberOfCameraPositions Number of Camera Positions to be scanned in 180 deg.
+     * @param {int} stepTimeForCamera Time between switching camera position in seconds.
+     */
+    
+    constructor(numberOfStops,StepLength,NumberOfCameraPositions,stepTimeForCamera){
+        if(numberOfStops < 0 || StepLength < 0 || NumberOfCameraPositions < 0 || stepTimeForCamera < 0){
+            throw '[ERROR] : Values cannot be negative'
+        }else if ( NumberOfCameraPositions < 1 ){
+            throw '[ERROR] : Number of camera positions should be greater than 0'
+        }
+        this.numberOfStops = parseInt(numberOfStops);
+        this.StepLength = parseFloat(StepLength);
+        this.NumberOfCameraPositions = parseInt(NumberOfCameraPositions);
+        this.stepTimeForCamera = parseInt(stepTimeForCamera);
+        this.scnnedSteps = 0;
+        this.isScanAborted = false;
+        this.CurrentServoAngle = 0;
+    };
+
+    StartScan(){
+        console.log(`
+        this.numberOfStops = ${this.numberOfStops};
+        this.StepLength = ${this.StepLength};
+        this.NumberOfCameraPositions = ${this.NumberOfCameraPositions};
+        this.stepTimeForCamera = ${this.stepTimeForCamera};
+        this.scnnedSteps = ${this.scnnedSteps}
+        `)
+        console.log('[SCAN] Time for step (cal.) : ',bot.DistanceToTime(this.StepLength))
+        this.Scan()
+        
+    }
+  
+    /**
+     * 
+     * @param {int} angle Angle at which servo motor needs to be directed. 
+     */
+    cameraposition(angle){
+        skt.emit('servocontrol',angle);
+        console.log('[EMIT] Servo Angle' , angle)
+        try{
+            //document.getElementById('linerotate').style = 'transform: translateY(10vh) rotateZ('+angle+'deg);';
+            ServoInfoUpdate(angle)
+        }catch{
+            //console.log("[ERROR] Can't find the element named 'linerotate' in HTML page.")
+        }
+        
+    };
+
+    Scan(){
+        var minimumAngle = 180/this.NumberOfCameraPositions;
+        var angles = [];
+        for(var i=1;i<this.NumberOfCameraPositions+1;i++){
+            angles.push(minimumAngle*i);
+            //console.log(`Cal. Camera step ${i} = ${minimumAngle*i} deg`);
+        };
+        var currentCameraPosition = 0;
+        console.log('Cal, angles : ' + angles)
+        console.log(angles)
+        this.cameraposition(0);
+        var loop = setInterval(()=>{
+            if(this.isScanAborted == false){
+                if(currentCameraPosition < this.NumberOfCameraPositions){
+                    
+                    this.cameraposition(angles[currentCameraPosition]);
+                    this.CurrentServoAngle = angles[currentCameraPosition]
+                    console.log('[SCAN] Camera Position : ',currentCameraPosition,' at angle :',angles[currentCameraPosition])
+                    currentCameraPosition++;
+                }
+                else{
+                    clearInterval(loop)
+                    console.log('[SCAN] moving Ahead ')
+                    this.movestepahead()
+                }
+            }
+            if(this.isScanAborted == true){
+                clearInterval(loop)
+            }
+        },this.stepTimeForCamera*1000)
+    };
+
+    movestepahead(){
+        console.log('[SCAN] Scanned positions : ',this.scnnedSteps)
+        if(this.isScanAborted == false){
+            if(this.scnnedSteps < this.numberOfStops){
+                this.scnnedSteps++;
+                console.log('[EMIT] Forward')
+                skt.emit('keypress','w')
+                setTimeout(() => {
+                    skt.emit('keyup','stop');
+                    console.log('[EMIT] Stop')
+                    this.Scan()
+                }, bot.DistanceToTime(this.StepLength)*1000);
+            }else{
+                console.log('SCANNING DONE')
+            }
+        }
+    }
+
+    /**
+     * 
+     * @returns Last recorded position of servo motor.
+     */
+    AbortScan(){
+        this.isScanAborted = true;
+        skt.emit('keyup','stop');
+        skt.emit('scanoff',this.CurrentServoAngle);
+        skt.emit('startfollowing')
+        this.cameraposition(90)
+        console.log('[SCAN] ---Canceled by user--- ')
+        return this.CurrentServoAngle
+    }
+
+}
+
+scan1 = new ScanVicinity(2,1,10,1)
+scan1.NumberOfCameraPositions = 10
+console.log(scan1.NumberOfCameraPositions)
+
+//scan1.StartScan()
+
+
+/* setTimeout(() => {
+    scan1.AbortScan()
+}, 4000); */
+/*      setInterval(()=>{
+         d = new Date();
+            //$("#liveimg").attr("src", "/livefeed?"+d.getTime());
+     },1000) */
+     //w = 87, a = 65 , s = 83 , d = 68
+     // up = 38,left = 37, down = 40, right = 39
+
+     //$("#speed").change(()=>{postSpeedToServer(document.getElementById("speed").value)})
+    }
+ </script>
+
+<!--  <script src="automation.js"></script> -->
+ </html>

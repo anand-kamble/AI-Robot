@@ -4,8 +4,12 @@
 </div>
 
 ## v4.0
-Introducing Scanning feature in this version which scans the vicinity around the robot and if it detects the desired object or human it will store the direction in which it has seen it. And after we command it to follow, it will turn the robot in that direction and start following the object.
+Introducing Scanning feature in this version which scans the vicinity around the robot and if it detects the desired object or human it will store the direction in which it has seen it. And after we command it to follow, it will turn the robot in that direction and start following the object. This version also includes improvements and bug fixes in Client User Interface.
 
+### Requirements for v4.0  
+python - 3.9.7^  
+opencv-python - 4.5.3.56^  
+python-socketio - 5.4.0^  
 
 ## v3.0
 The robot can now follow a bottle in its sight by tracking the position of the bottle in image and deciding the direction to move in. This version has also added safety features to prevent collision using Ultrasonic sensor. 

@@ -3,6 +3,9 @@
   <h3>This project is in devolopment.</h3>
 </div>
 
+## v4.0
+Introducing Scanning feature in this version which scans the vicinity around the robot and if it detects the desired object or human it will store the direction in which it has seen it. And after we command it to follow, it will turn the robot in that direction and start following the object.
+
 
 ## v3.0
 The robot can now follow a bottle in its sight by tracking the position of the bottle in image and deciding the direction to move in. This version has also added safety features to prevent collision using Ultrasonic sensor. 

@@ -3,6 +3,12 @@
   <h3>This project is in devolopment.</h3>
 </div>
 
+## v6.0
+Added support for PiCamera improving performance of image processing.
+
+## v5.0
+Improved stability and optimizations over version 4.0  
+
 ## v4.0
 Introducing Scanning feature in this version which scans the vicinity around the robot and if it detects the desired object or human it will store the direction in which it has seen it. And after we command it to follow, it will turn the robot in that direction and start following the object. This version also includes improvements and bug fixes in Client User Interface.
 > File named Raspberry.py should be executed on the RaspberryPi.

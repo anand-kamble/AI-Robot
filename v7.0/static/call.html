@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+    <script src="jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="peerjs.min.js"></script>
+</head>
+<body>
+    <div id="videoholfer"></div>
+</body>
+
+<script>
+    var skt = io()
+    var peer = new Peer(undefined,{
+        host: '/',
+        port: '3001'
+    }); 
+
+    $(document).ready(()=>{
+        
+        skt = io.connect('http://localhost:5000')
+
+        skt.on('connect',()=>{
+            
+        })
+        skt.emit('getOnlineMachines')
+    })
+
+
+    peer.on('open' , id =>{
+        skt.emit('robotUIconnected',id);
+    });
+
+    skt.on('RUIconnected', (peerID) =>{
+        console.log('PeerID : ',peerID);
+    });
+
+    navigator.mediaDevices.getUserMedia({
+        video : true,
+        audio : true
+    }).then(stream => {
+        addVideoStream(stream)
+
+        peer.on('call' , call => {
+            call.answer(stream);
+
+            call.on('stream' , clientVideoStream => {
+                addVideoStream(clientVideoStream);
+            });
+        });
+    })
+
+    function addVideoStream(stream){
+        var video = document.createElement('video');
+        video.srcObject = stream;
+        video.addEventListener('loadedmetadata',()=>{
+            video.play()
+        })
+        document.getElementById('videoholfer').append(video)
+    }
+</script>
+</html>

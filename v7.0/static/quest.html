@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>A.I. Robot</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<style>
+    body {
+        margin: 0%;
+        font-family: 'Courier New', Courier, monospace;
+        background-color: rgb(36, 36, 36);
+    }
+    #CenterText{
+        color: white;
+    }
+    .centertextholder{
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #btnholder{
+        position: absolute;
+        z-index: 20;
+        top: 70vh;
+        left: 30vw;
+    }
+    .optionbtn{
+        width: 20vw;
+        height: 10vh;
+    }
+</style>
+<body id="body">
+    <div class="centertextholder">
+        <h1 id="CenterText"></h1>
+    </div>
+    <button style="position: absolute;top: 0%;width: 50vw;height: 50vh;" id="fullscreenbtn" onclick="openFullscreen()">START</button>
+    <div id="btnholder">
+        <button class="optionbtn">Option 1</button>
+        <button class="optionbtn">Option 2</button>
+    </div>
+
+    
+</body>
+<script>
+    //UpdateCenterText('Hey... How are you ??')
+    /* Get the documentElement (<html>) to display the page in fullscreen */
+var elem = document.documentElement;
+
+/* View in fullscreen */
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+  document.getElementById('fullscreenbtn').style = 'display:none;'
+  main()
+}
+
+    
+    function UpdateCenterText(text){
+        return new Promise(function (myResolve, myReject){
+            var str1 = text
+            if( typeof text !== 'string') myReject(Error("It broke"));
+            var animationStatus = 0;
+            var loop = setInterval(()=>{
+                if(animationStatus < str1.length){
+                    animationStatus++;
+                    document.getElementById('CenterText').innerText = str1.substring(0,animationStatus);
+                }else{
+                    clearInterval(loop);
+                    myResolve("Stuff worked!");
+                }
+            },100)
+            }).then(
+                function(value){
+                    return true
+                },
+                function(error){
+                    console.error('INPUT TYPE MUST BE A STRING.')
+                }
+            ); 
+    }
+
+    async function main(){
+        var updater = await UpdateCenterText('Question will be here ??');
+        
+    }
+
+    
+</script>
+</html>

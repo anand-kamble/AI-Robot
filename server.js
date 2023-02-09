@@ -1,3 +1,10 @@
+/**
+ * This server is meant to serve the static files required for the UI.
+ * Using seperate nodeJS server helps to serve the files efficiently
+ * as it offloads the load of the http requests from the main python server
+ * optimizing the system. Resulting in improved responsiveness of the UI.
+ */
+
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);

@@ -1,12 +1,9 @@
 # Importing required packages
-from warnings import catch_warnings
-import cv2
 from numpy import size
 from requests import get
 import socketio
 import base64
 import time
-import io
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import RPi.GPIO as GPIO

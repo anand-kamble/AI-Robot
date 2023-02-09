@@ -1,31 +1,12 @@
 # Importing required packages
-import multiprocessing
-from re import search
-import threading
-from traceback import print_tb
 import cv2
-from flask import Flask
-from flask.helpers import send_file, send_from_directory
 import socket
-from multiprocessing import Process
-from ctypes import c_wchar_p
-from requests import get
 import socketio
 import base64
 import time
-import io
-from logging import debug
-import logging
 import eventlet
-import json
 import numpy as np
-import flask_socketio
-from PIL import Image
-# from logupdate import logupdate
-import sys  
 import socket
-from threading import Timer
-import multiprocessing
 import webbrowser
 
 

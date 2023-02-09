@@ -49,12 +49,12 @@ webbrowser.open(f'http://{local_ip}:{port}')
 sio = socketio.Server(cors_allowed_origins="*",logger=False)
 
 staticFiles = { 
-      '/': {'content_type': 'text/html', 'filename': 'static/index.html'},
-      '/socket.io.min.js': {'content_type': 'text/javascript ', 'filename': 'static/socket.io.min.js'},
-      '/jquery-3.6.0.min.js': {'content_type': 'text/javascript ', 'filename': 'static/jquery-3.6.0.min.js'},
-      '/peerjs.min.js': {'content_type': 'text/javascript ', 'filename': 'static/peerjs.min.js'},
-      '/Robot top view for web.png':{'content_type': 'image/png' , 'filename':'static/Robot top view for web.png'},
-      '/RobotUI':{'content_type': 'text/html', 'filename': 'static/call.html'}
+      '/': {'content_type': 'text/html', 'filename': 'UI/static/index.html'},
+      '/socket.io.min.js': {'content_type': 'text/javascript ', 'filename': 'UI/static/socket.io.min.js'},
+      '/jquery-3.6.0.min.js': {'content_type': 'text/javascript ', 'filename': 'UI/static/jquery-3.6.0.min.js'},
+      '/peerjs.min.js': {'content_type': 'text/javascript ', 'filename': 'UI/static/peerjs.min.js'},
+      '/Robot top view for web.png':{'content_type': 'image/png' , 'filename':'UI/static/Robot top view for web.png'},
+      '/RobotUI':{'content_type': 'text/html', 'filename': 'UI/static/call.html'}
 }
 app = socketio.WSGIApp(sio , static_files=staticFiles)
 
@@ -94,24 +94,15 @@ def processImage(imageString):
     global last_Image_Time
     currenttime = time.time()
     print('Start Time : ',currenttime)
-    #print(imageString)
     if len(imageString) > 0:
             imgBuffer = base64.b64decode(imageString)
-            NumArray = np.frombuffer(imgBuffer, dtype=np.uint8) #np.fromstring(imageString, dtype=np.uint8).reshape(480,640,3) #np.frombuffer(imgBuffer, dtype=np.uint8)#np.fromstring(imageString, dtype=np.uint8).reshape(720,1280,3)
-            #print(np.fromstring(imageString, dtype=np.uint8))
-            # NumArray = np.frombuffer(imgBuffer, dtype=np.uint8)
-            #print(NumArray)
+            NumArray = np.frombuffer(imgBuffer, dtype=np.uint8) 
             print(NumArray.shape)
-            """ cv2.imshow('Server',NumArray)
-            cv2.waitKey(1) """
             frame = NumArray
-            # frame = cv2.imdecode(NumArray,0)
-            #cv2.imshow('Trial',frame)
             ClassIndex, confidence, bbox = model.detect(frame,confThreshold=0.5)
             frameH , frameW , frameCh = frame.shape
             frameWparts = frameW // 3
             if (len(ClassIndex)!=0):
-                        #print('Lenghth of arra',len(bbox))
                         if len(bbox) > 1:
                               for ClassInd, conf, boxes in zip(ClassIndex.flatten(), confidence.flatten(), bbox):
                                     if(ClassInd <= 80):
@@ -128,15 +119,10 @@ def processImage(imageString):
                                                 position = centerPoint[1]//frameWparts
                                                 if is_scan_running is True:
                                                       if(position == 0):
-                                                      #print('Bot needs to turn left'  )
                                                             last_detected_position = 0
-                                                      # sio.emit('keydownSearch','a')
                                                       if(position == 1):
-                                                            #print('Bot needs to go straight ' )
                                                             last_detected_position = 1
-                                                      # sio.emit('keydownSearch','w')
                                                       if(position == 2):
-                                                      #print('Bot needs to turn right ')
                                                             last_detected_position = 2
                                                       sio.emit('abortscan')
                                                       sio.emit('foundObject')
@@ -154,7 +140,7 @@ def processImage(imageString):
                                                             print('Bot needs to turn right ')
                                                             sio.emit('keydownSearch','d')
                                           else:
-                                                #search FOr Bottle
+                                                #search for Bottle
                                                 print('No Human In sight')
                                                 print(last_servo_angle , is_following)
                                                 if is_following is True:
@@ -168,7 +154,6 @@ def processImage(imageString):
                                                       if last_servo_angle == 90 :
                                                             sio.emit('keydownSearch','w')    
                                                             print('Searching in forward ') 
-                                                #sio.emit('keydownSearch','d')
                                           cv2.rectangle(frame,boxes,(255,0,0),)
                                           cv2.putText(frame,classLabels[ClassInd-1],(boxes[0],boxes[1]+40), font, fontScale=font_scale, color=(0,255,0), thickness=3)
                         else:
@@ -188,7 +173,6 @@ def processImage(imageString):
                         
             print('FPS : %d' %(1/(time.time() - last_Image_Time)),end="\r")
             last_Image_Time = time.time()
-            #cv2.imshow('Obj Detection',frame)
             retval , buffer = cv2.imencode('.jpg',frame)
             if retval is True:
                   encodedImage = base64.b64encode(buffer)
@@ -210,7 +194,7 @@ def scanRoom () :
       isScanRunning = True
       sio.emit('changespeed',100)
       botRotate = Robot(70,100,238,0.8)
-      timeReq = 8.75 #botRotate.TimeForRotation(360)
+      timeReq = 8.75 
       
       print('DIST REQ : ',botRotate.TimeForRotation(360))
       print('SCAN TIME REQ : ',timeReq)
@@ -220,18 +204,6 @@ def scanRoom () :
 
 
       print('\n\nStarting scan at : ',time.time())
-      """starttime = time.time()
-      while time.time()-starttime < 10:
-           print('waiting\r',end="\r", flush=True)
-      #sio.emit('keyend')
-      sio.emit('keyend')
-      print('Ending Scan at : ',time.time()) """
-      #Timer(10,endmovement).start()
-      
-      
-
-
-
 
 @sio.event
 def connect(sID, environ):
@@ -266,7 +238,6 @@ def handleMSG(sID,msg,room):
 
 @sio.on('getOnlineMachines')
 def SendOnlineMachines(sID):
-      #print("SENDING MACHINES")
       resStr = ''
       for i in range(len(onlineRobos)):
             resStr+= ','
@@ -388,12 +359,6 @@ def ReceiveStreamFrame(sID , data):
       lastImageString = data 
       print('Got Image String')
       processImage(data)
-
-# @sio.on('requestStreaming')
-# def requestStreaming(sID):
-      # sio.emit('startStreamingFromRobot')
-
-    
 
 if __name__ == '__main__':
       eventlet.wsgi.server(eventlet.listen(('',port )),app, log_output=False)

@@ -1,3 +1,10 @@
+''' 
+This file is meant to be executed on the RaspberryPi 3 Model B
+
+The variable serverUrl must be update with the appropriate url of the server. 
+
+'''
+
 # Importing required packages
 from numpy import size
 from requests import get

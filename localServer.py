@@ -383,13 +383,13 @@ def RUIconnect(sID,peerID):
 @sio.on('attendanceData')
 def attendanceData(sID,data):
       print(data)
-      file = open('attendance.csv',"a")
+      file = open('CSV/attendance.csv',"a")
       file.write(data)
 
 @sio.on('coviddata')
 def attendanceData(sID,data):
       print(data)
-      file = open('covid.csv',"a")
+      file = open('CSV/covid.csv',"a")
       file.write(data)
 
 @sio.on('playAudio')

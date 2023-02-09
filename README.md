@@ -2,13 +2,22 @@
   <h1>AI Robot</h1>
 </div>
 
-## v6.0
+## Tutorial
+
+
+
+## Publications
+Materials Today: Proceedings - Elsevier  
+[Object following robot based on AI/ML](https://www.sciencedirect.com/science/article/pii/S2214785322064185)  
+
+## Changelog
+### v6.0
 Added support for PiCamera improving performance of image processing.
 
-## v5.0
+### v5.0
 Improved stability and optimizations over version 4.0  
 
-## v4.0
+### v4.0
 Introducing Scanning feature in this version which scans the vicinity around the robot and if it detects the desired object or human it will store the direction in which it has seen it. And after we command it to follow, it will turn the robot in that direction and start following the object. This version also includes improvements and bug fixes in Client User Interface.
 > File named Raspberry.py should be executed on the RaspberryPi.
 
@@ -17,10 +26,10 @@ python - 3.9.7^
 opencv-python - 4.5.3.56^  
 python-socketio - 5.4.0^  
 
-## v3.0
+### v3.0
 The robot can now follow a bottle in its sight by tracking the position of the bottle in image and deciding the direction to move in. This version has also added safety features to prevent collision using Ultrasonic sensor. 
 
-## v2.0  
+### v2.0  
 This version of the project can be deployed on Internet. It includes Server files in the folder named [Server](/v2.0/server/) which are deployed on Heroku and Client files in the [Client folder](/v2.0/Client/). The Clients file are to be run on RaspberryPi, before running make sure RaspberryPi has an active internet connection. Run the following command to start the program on RaspberryPi.
 ```
 python3 client.py
